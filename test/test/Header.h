@@ -36,6 +36,7 @@ private:
 	int marked;
 	int correct;
 
+	//Places the numbers on the grid after the mines have been placed
 	void setNumbers ( int xIn , int yIn ){
 		square *curr;
 		for ( int x = -1; x < 2; x++ ){
@@ -48,7 +49,8 @@ private:
 		}
 	}
 
-	void openBlanks ( int xIn , int yIn ){		//ToDo
+	//If you open an empty square, open all other empty squares.
+	void openBlanks ( int xIn , int yIn ){
 		square *curr = grid[ xIn ][ yIn ];
 
 		if ( ( curr->number == 0 ) && ( !curr->opened ) ){
@@ -57,9 +59,9 @@ private:
 
 					if ( ( xIn + x >= 0 ) && ( xIn + x < xSize ) &&
 						 ( yIn + y >= 0 ) && ( yIn + y < ySize ) ){
-							curr->opened = 1;
-							openBlanks ( xIn + x , yIn + y );
-						}
+						curr->opened = 1;
+						openBlanks ( xIn + x , yIn + y );
+					}
 				}
 			}
 		}
@@ -73,6 +75,8 @@ private:
 	}
 
 public:
+
+//Constructor, takes x size, y size and nr of mines.
 	Map ( int xIn , int yIn , int mines ){
 		for ( int x = 0; x < xIn; x++ ){
 			for ( int y = 0; y < yIn; y++ ){
@@ -91,6 +95,7 @@ public:
 
 	}
 
+	//Places mines around your current place
 	void mineGen (){
 		int mines = noMines;
 		srand ( time ( 0 ) );
@@ -112,6 +117,7 @@ public:
 		}
 	}
 
+	//Open the current square
 	int openSqr (){
 		square *curr;
 		curr = grid[ xPos ][ yPos ];
@@ -130,6 +136,7 @@ public:
 		return CLEAR;
 	}
 
+	//Mark the current square
 	void markSqr (){
 		square *curr;
 
