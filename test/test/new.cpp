@@ -30,6 +30,7 @@ int main (){
 	cout << "noMines: ";
 	cin >> noMines;
 
+	//creates the board
 	Map map ( xSize , ySize , noMines );
 
 	int started = 0;
@@ -92,7 +93,7 @@ int main (){
 
 
 
-
+//wait for a keypress, returns the action (see defines)
 int keylist (){
 	int key = 0;
 
