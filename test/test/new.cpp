@@ -75,6 +75,17 @@ int main (){
 
 		if ( !map.getDiff () ){
 			cout << endl << "You WIN" << endl;
+			int t = map.getTime ();
+			if ( t > 60 ){
+				if( t > 120 )
+					cout << endl << t / 60 << " Minutes, " << t % 60 << " Seconds" << endl;
+				else
+					cout << endl << t / 60 << " Minute, " << t % 60 << " Seconds" << endl;
+			}
+
+			else{
+				cout << endl << t << " Seconds to win" << endl;
+			}
 			system ( "PAUSE" );
 			return 1;
 		}

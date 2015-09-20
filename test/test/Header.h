@@ -14,6 +14,7 @@ public:
 	int mine;
 	int marked;
 	int number;
+	int unopenedAround;
 
 	square (){
 		opened = 0;
@@ -35,13 +36,16 @@ private:
 	int ySize;
 	int marked;
 	int correct;
+	unsigned long long startTime;
+
 
 	//Places the numbers on the grid after the mines have been placed
 	void setNumbers ( int xIn , int yIn ){
 		square *curr;
 		for ( int x = -1; x < 2; x++ ){
 			for ( int y = -1; y < 2; y++ ){
-				if ( ( xIn + x >= 0 ) && ( xIn + x < xSize ) && ( yIn + y >= 0 ) && ( yIn + y < ySize ) ){//if within the gameboard
+				if ( ( xIn + x >= 0 ) && ( xIn + x < xSize ) //if within the gameboard
+					 && ( yIn + y >= 0 ) && ( yIn + y < ySize ) ){
 					curr = grid[ xIn + x ][ yIn + y ];
 					curr->number++;
 				}
@@ -74,9 +78,28 @@ private:
 		}
 	}
 
+	void setUnop ( int xIn , int yIn ){
+		square *curr = grid[ xIn ][ yIn ];
+		int counter = 0;
+
+		for ( int x = -1; x < 2; x++ ){
+			for ( int y = -1; y < 2; y++ ){
+
+				if ( ( xIn + x >= 0 ) && ( xIn + x < xSize ) &&
+					 ( yIn + y >= 0 ) && ( yIn + y < ySize ) ){
+
+					if ( !grid[ xIn + x ][ yIn + y ]->opened )
+						counter++;
+
+				}
+			}
+		}
+		curr->unopenedAround = counter;
+	}
+
 public:
 
-//Constructor, takes x size, y size and nr of mines.
+	//Constructor, takes x size, y size and nr of mines.
 	Map ( int xIn , int yIn , int mines ){
 		for ( int x = 0; x < xIn; x++ ){
 			for ( int y = 0; y < yIn; y++ ){
@@ -115,6 +138,7 @@ public:
 				}
 			}
 		}
+		startTime = time ( 0 );
 	}
 
 	//Open the current square
@@ -138,9 +162,10 @@ public:
 
 	//Mark the current square
 	void markSqr (){
-		square *curr;
+		square *curr = grid[ xPos ][ yPos ];
 
-		curr = grid[ xPos ][ yPos ];
+		if ( curr->opened )
+			return;
 
 		if ( curr->marked == 0 ){
 			curr->marked = 1;
@@ -253,6 +278,19 @@ public:
 				delete grid[ x ][ y ];
 			}
 		}
+	}
+
+	//void cheat (){
+	//	square *curr;
+	//	for ( int x = 0; x < xSize; x++ ){
+	//		for ( int y = 0; y < xSize; y++ ){
+	//			setUnop ( x , y );
+	//		}
+	//	}
+	//}
+
+	int getTime (){
+		return ( time ( 0 ) - startTime );
 	}
 
 
