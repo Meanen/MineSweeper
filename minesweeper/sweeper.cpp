@@ -5,140 +5,113 @@
 
 using namespace std;
 
-#define up 1
-#define down 2
-#define left 3
-#define right 4
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
 
 #define ENTER 13
 
-#define open 5
-#define mark 6
+#define OPEN 5
+#define MARK 6
 
+int keylist();
 
-int keylist ();
+int main() {
+    int xSize , ySize , noMines;
 
-int main (){
-	int xSize , ySize , noMines;
+    cout << "xSize: ";
+    cin >> xSize;
 
-	cout << "xSize: ";
-	cin >> xSize;
+    cout << "ySize: ";
+    cin >> ySize;
 
-	cout << "ySize: ";
-	cin >> ySize;
+    cout << "noMines: ";
+    cin >> noMines;
 
-	cout << "noMines: ";
-	cin >> noMines;
+    //creates the board
+    Map map ( xSize , ySize , noMines );
 
-	//creates the board
-	Map map ( xSize , ySize , noMines );
+    bool started = false;
+    map.printmap();
 
-	int started = 0;
-	map.printmap ();
+    while ( 1 ) {
+        int key = keylist();
 
-	while ( 1 ){
-		int key = keylist ();
+        bool isMine = false;
 
-		int action = 0;
+        switch ( key ) {
+            case UP:
+                map.moveUp();
+                break;
+            case DOWN:
+                map.moveDown();
+                break;
+            case LEFT:
+                map.moveLeft();
+                break;
+            case RIGHT:
+                map.moveRight();
+                break;
+            case MARK:
+                map.markSqr();
+                break;
+            case OPEN:
+                if ( !started ) {        //if not started, place mines around the first square opened
+                    map.mineGen();
+                    started = true;
+                }
+                isMine = map.openSqr();
+                break;
+        }
+        
+        map.printmap();
 
-		switch ( key ){
+        if ( map.isVictory() ) {
+            cout << endl << "You WIN" << endl;
+            int t = map.getTime();
+            if ( t > 60 ) {
+                cout << endl << t / 60 << " Minute, " << t % 60 << " Seconds" << endl;
+            }
+            else{
+                cout << endl << t << " Seconds to win" << endl;
+            }
+            system ( "PAUSE" );
+            return 1;
+        }
 
-			case up:
-				map.moveUp ();
-				break;
-
-			case down:
-				map.moveDown ();
-				break;
-
-			case left:
-				map.moveLeft ();
-				break;
-
-			case right:
-				map.moveRight ();
-				break;
-
-			case open:
-				if ( !started ){		//if not started, place mines around the first square opened
-					map.mineGen ();
-					started = 1;
-				}
-				action = map.openSqr ();
-				break;
-
-			case mark:
-				map.markSqr ();
-				break;
-		}
-		map.printmap ();
-
-		if ( !map.getDiff () ){
-			cout << endl << "You WIN" << endl;
-			int t = map.getTime ();
-			if ( t > 60 ){
-				if( t > 120 )
-					cout << endl << t / 60 << " Minutes, " << t % 60 << " Seconds" << endl;
-				else
-					cout << endl << t / 60 << " Minute, " << t % 60 << " Seconds" << endl;
-			}
-
-			else{
-				cout << endl << t << " Seconds to win" << endl;
-			}
-			system ( "PAUSE" );
-			return 1;
-		}
-
-		if ( action == MINE ){
-			cout << endl << "KABOOM" << endl;
-			system ( "PAUSE" );
-			return 1;
-		}
-
-	}
-	return 0;
-
+        if ( isMine ) {
+            cout << endl << "KABOOM" << endl;
+            system ( "PAUSE" );
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
-
-
-
 //wait for a keypress, returns the action (see defines)
-int keylist (){
-	int key = 0;
+int keylist() {
+    int key = 0;
 
-	while ( 1 ){
-		key = _getch ();
+    while ( 1 ) {
+        key = _getch();
 
-		switch ( key ){
+        switch ( key ) {
 
-			case 'w':
-				return up;
-				break;
-
-			case 's':
-				return down;
-				break;
-
-
-			case 'a':
-				return left;
-				break;
-
-
-			case 'd':
-				return right;
-				break;
-
-			case ENTER:
-				return open;
-				break;
-
-			case ' ':
-				return mark;
-				break;
-		}
-	}
+            case 'w':
+                return UP;
+            case 's':
+                return DOWN;
+            case 'a':
+                return LEFT;
+            case 'd':
+                return RIGHT;
+            case ENTER:
+                return OPEN;
+            case ' ':
+                return MARK;
+        }
+    }
 }
 
